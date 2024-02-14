@@ -1,42 +1,33 @@
 import winston, { createLogger } from "winston";
-import { debugMode } from "./env";
-import { dateFormat } from "./format";
-require('dotenv').config();
 
 const plainTextFormat = winston.format.printf(({ level, message, label, timestamp }) => {
     return `${message}`;
 })
 
 export class FileLogger {
+    static defaultLogDirectory: String = './logs';
     winston;
-    constructor(channel) {
+    logDirectory: String;
+    static levels = ['error','warn','info','debug'];
+    constructor(channel, {logDirectory}) {
+        this.logDirectory = logDirectory ?? FileLogger.defaultLogDirectory;
         this.winston = createLogger({
             format: plainTextFormat,
             transports: [
-                new winston.transports.File({
-                    filename: 'logs/all.txt',
-                }),                
-                new winston.transports.File({
-                    filename: `logs/${channel}.txt`,
-                }),                                
-                new winston.transports.File({
-                    filename: `logs/${channel}.error.txt`,
-                    level: 'error'
-                }),                                
-                new winston.transports.File({
-                    filename: `logs/${channel}.warn.txt`,
-                    level: 'warning'
-                }),                                
-                new winston.transports.File({
-                    filename: `logs/${channel}.info.txt`,
-                    level: 'info'
-                }),
-                new winston.transports.File({
-                    filename: `logs/${channel}.debug.txt`,
-                    level: 'debug'
-                }),
+                ...FileLogger.levels.map( (level) => new winston.transports.File({
+                        filename: this._loggerFile('all', level),
+                    })
+                ),
+                ...FileLogger.levels.map( (level) => new winston.transports.File({
+                        filename: this._loggerFile(channel, level),
+                    })
+                ),
             ]
           });
+    }
+
+    _loggerFile(channel: string, level: string): string {
+        return `./${this.logDirectory}/${channel}.${level}.txt`;
     }
   
     log(...messages) {

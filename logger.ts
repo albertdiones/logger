@@ -1,16 +1,14 @@
 import winston from "winston";
-import { debugMode } from "./env";
-import { dateFormat } from "./format";
 import FileLogger from "./fileLogger";
-require('dotenv').config(); 
 
 export class Logger {
-    debugMode;
-    fileLogger;
+    static defaultDebugMode: Boolean;
+    debugMode: Boolean;
+    fileLogger: FileLogger;
     channel: string;
-    constructor(channel: string = 'nochannel') {
-      this.debugMode = debugMode;
-      this.fileLogger = new FileLogger(channel);
+    constructor(channel: string = 'nochannel', {debugMode=false, logDirectory = null} = {}) {
+      this.debugMode = debugMode ?? Logger.defaultDebugMode;
+      this.fileLogger = new FileLogger(channel, {logDirectory: logDirectory});
       this.channel = channel;
     }
   
@@ -52,7 +50,7 @@ export class Logger {
 
     format(messages: Array<any>,type) {
         messages.unshift(
-            `[${dateFormat(Date.now())}]`,
+            `[${Date.now().toLocaleString()}]`,
             `[${type}]`
         );
         return messages;
