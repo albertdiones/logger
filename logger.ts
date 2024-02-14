@@ -50,7 +50,7 @@ export class Logger {
 
     format(messages: Array<any>,type) {
         messages.unshift(
-            `[${Date.now().toLocaleString()}]`,
+            `[${new Date().toLocaleString()}]`,
             `[${type}]`
         );
         return messages;
