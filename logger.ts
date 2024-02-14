@@ -2,11 +2,11 @@ import winston from "winston";
 import FileLogger from "./fileLogger";
 
 export class Logger {
-    static defaultDebugMode: Boolean;
+    static defaultDebugMode: Boolean = false;
     debugMode: Boolean;
     fileLogger: FileLogger;
     channel: string;
-    constructor(channel: string = 'nochannel', {debugMode=false, logDirectory = null} = {}) {
+    constructor(channel: string = 'nochannel', {debugMode=null, logDirectory = null} = {}) {
       this.debugMode = debugMode ?? Logger.defaultDebugMode;
       this.fileLogger = new FileLogger(channel, {logDirectory: logDirectory});
       this.channel = channel;
