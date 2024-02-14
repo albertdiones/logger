@@ -1,0 +1,25 @@
+{
+  "name": "logger",
+  "version": "0.0.0",
+  "description": "Multichannel File Logger and Console Logger in one",
+  "main": "logger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albertdiones/logger.git"
+  },
+  "keywords": [
+    "logger"
+  ],
+  "author": "Albert Diones",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/albertdiones/logger/issues"
+  },
+  "homepage": "https://github.com/albertdiones/logger#readme",
+  "dependencies": {
+    "winston": "^3.11.0"
+  }
+}
