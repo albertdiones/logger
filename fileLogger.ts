@@ -16,10 +16,12 @@ export class FileLogger {
             transports: [
                 ...FileLogger.levels.map( (level) => new winston.transports.File({
                         filename: this._loggerFile('all', level),
+                        level
                     })
                 ),
                 ...FileLogger.levels.map( (level) => new winston.transports.File({
                         filename: this._loggerFile(channel, level),
+                        level
                     })
                 ),
             ]
