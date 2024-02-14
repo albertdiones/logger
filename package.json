@@ -1,6 +1,6 @@
 {
   "name": "add_logger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Multichannel File Logger and Console Logger in one",
   "main": "logger.js",
   "scripts": {
@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/albertdiones/logger#readme",
   "dependencies": {
-    "dotenv": "^16.4.4",
     "winston": "^3.11.0"
   }
 }
