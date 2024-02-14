@@ -51,6 +51,7 @@ export class Logger {
     format(messages: Array<any>,type) {
         messages.unshift(
             `[${new Date().toLocaleString()}]`,
+            `[${this.channel}]`,
             `[${type}]`
         );
         return messages;
