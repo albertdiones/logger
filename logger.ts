@@ -1,24 +1,24 @@
-import winston from "winston";
 import FileLogger from "./fileLogger";
 
 export class Logger {
-    static defaultDebugMode: Boolean = false;
-    debugMode: Boolean;
+    static defaultDebugMode: boolean = false;
+    debugMode: boolean;
     fileLogger: FileLogger;
     channel: string;
-    constructor(channel: string = 'nochannel', {debugMode=null, logDirectory = null} = {}) {
+
+    constructor(channel: string = 'nochannel', { debugMode=null, logDirectory = null } = {}) {
       this.debugMode = debugMode ?? Logger.defaultDebugMode;
-      this.fileLogger = new FileLogger(channel, {logDirectory: logDirectory});
+      this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
       this.channel = channel;
     }
   
-    log(...messages) {
+    log(...messages: any[]) {
         const formattedMessages = this.format(messages,'log');
         console.log(...formattedMessages);
         this.fileLogger.info(...formattedMessages);
     }
   
-    debug(...messages) {
+    debug(...messages: any[]) {
         const formattedMessages = this.format(messages,'debug');
         if (this.debugMode) {
             console.debug(...formattedMessages)
@@ -26,7 +26,7 @@ export class Logger {
         this.fileLogger.debug(...formattedMessages);
     }
   
-    info(...messages) {        
+    info(...messages: any[]) {        
         const formattedMessages = this.format(messages,'info');
         if (this.debugMode) {
             console.info(...formattedMessages);
@@ -34,7 +34,7 @@ export class Logger {
         this.fileLogger.info(...formattedMessages);      
     }
   
-    warn(...messages) {        
+    warn(...messages: any[]) {        
         const formattedMessages = this.format(messages,'warning');
         if (this.debugMode) {
             console.warn(...formattedMessages)
@@ -42,13 +42,13 @@ export class Logger {
         this.fileLogger.warn(...formattedMessages);
     }
   
-    error(...messages) {
+    error(...messages: any[]) {
         const formattedMessages = this.format(messages,'error');
         console.error(...formattedMessages)
         this.fileLogger.error(...formattedMessages);
     }
 
-    format(messages: Array<any>,type) {
+    format(messages: any[], type: string) {
         messages.unshift(
             `[${new Date().toLocaleString()}]`,
             `[${this.channel}]`,
@@ -56,8 +56,6 @@ export class Logger {
         );
         return messages;
     }
-  }
+}
 
-export const logger = new Logger();
-
-export default logger;
+export default new Logger();
