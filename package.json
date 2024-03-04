@@ -2,7 +2,7 @@
   "name": "add_logger",
   "version": "0.0.11",
   "description": "Multichannel File Logger and Console Logger in one",
-  "main": "./dist/logger.js",
+  "main": "./logger.ts",
   "author": "Albert Diones",
   "license": "ISC",
   "bugs": {
@@ -17,7 +17,7 @@
     "logger"
   ],
   "files": [
-    "./dist/*.js"
+    "./*.ts"
   ],
   "types": "./dist/logger.d.ts",
   "scripts": {
