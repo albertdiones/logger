@@ -2,7 +2,7 @@
   "name": "add_logger",
   "version": "0.0.12",
   "description": "Multichannel File Logger and Console Logger in one",
-  "main": "./logger.ts",
+  "main": "./index.ts",
   "author": "Albert Diones",
   "license": "ISC",
   "bugs": {
@@ -14,7 +14,10 @@
     "url": "git+https://github.com/albertdiones/logger.git"
   },
   "keywords": [
-    "logger"
+    "logger",
+    "logging channels",
+    "console logging",
+    "multi-file logging"
   ],
   "files": [
     "./*.ts"
