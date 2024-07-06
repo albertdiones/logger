@@ -1,4 +1,4 @@
-import { Logger } from "../logger";
+import { Logger } from "../";
 
 const object = {x: 1 , y: 2}
 const logger = new Logger('api_fetches', { debugMode: true });
