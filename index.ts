@@ -1,21 +1,38 @@
 import FileLogger from "./fileLogger";
 
+interface DbModel {
+    create(paths: {channel: string,level: string,message: any[]}): Promise<DbModel>;
+}
+
 export class Logger {
     static defaultDebugMode: boolean = false;
+    static defaultDbModel:DbModel | null = null;
+    static defaultLogOnFile: boolean | null = null;
     debugMode: boolean;
+    logOnFile: boolean;
     fileLogger: FileLogger;
+    dbModel: DbModel | null;
     channel: string;
 
-    constructor(channel: string = 'nochannel', { debugMode=null, logDirectory = null } = {}) {
+    constructor(channel: string = 'nochannel', { debugMode=null, logDirectory = null, dbModel = null, logOnFile = null} = {}) {
       this.debugMode = debugMode ?? Logger.defaultDebugMode;
-      this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
+      this.dbModel = dbModel ?? Logger.defaultDbModel;
+      this.logOnFile = logOnFile ?? Logger.defaultLogOnFile ?? true;
+
+      console.log(this.logOnFile);
+
+      if (this.logOnFile) {
+        this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
+      }
+
       this.channel = channel;
     }
   
     log(...messages: any[]) {
         const formattedMessages = this.format(messages,'log');
         console.log(...formattedMessages);
-        this.fileLogger.info(...formattedMessages);
+        this.fileLogger?.info(...formattedMessages);
+        this.dbModel?.create({channel: this.channel, level: 'log', message: messages});
     }
   
     debug(...messages: any[]) {
@@ -23,7 +40,8 @@ export class Logger {
         if (this.debugMode) {
             console.debug(...formattedMessages)
         }
-        this.fileLogger.debug(...formattedMessages);
+        this.fileLogger?.debug(...formattedMessages);
+        this.dbModel?.create({channel: this.channel, level: 'debug', message: messages});
     }
   
     info(...messages: any[]) {        
@@ -31,7 +49,8 @@ export class Logger {
         if (this.debugMode) {
             console.info(...formattedMessages);
         }
-        this.fileLogger.info(...formattedMessages);      
+        this.fileLogger?.info(...formattedMessages);
+        this.dbModel?.create({channel: this.channel, level: 'info', message: messages});
     }
   
     warn(...messages: any[]) {        
@@ -39,13 +58,15 @@ export class Logger {
         if (this.debugMode) {
             console.warn(...formattedMessages)
         }
-        this.fileLogger.warn(...formattedMessages);
+        this.fileLogger?.warn(...formattedMessages);
+        this.dbModel?.create({channel: this.channel, level: 'warning', message: messages});
     }
   
     error(...messages: any[]) {
         const formattedMessages = this.format(messages,'error');
         console.error(...formattedMessages)
-        this.fileLogger.error(...formattedMessages);
+        this.fileLogger?.error(...formattedMessages);
+        this.dbModel?.create({channel: this.channel, level: 'error', message: messages});
     }
 
     format(messages: any[], type: string) {
@@ -58,4 +79,4 @@ export class Logger {
     }
 }
 
-export default new Logger();
+export default Logger;

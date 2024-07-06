@@ -1,5 +1,5 @@
 import FileLogger from "../fileLogger";
-import { Logger } from "../logger";
+import { Logger } from "../";
 
 const object = {x: 1 , y: 2}
 FileLogger.defaultMaxSize = 10;
