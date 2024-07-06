@@ -19,8 +19,6 @@ export class Logger {
       this.dbModel = dbModel ?? Logger.defaultDbModel;
       this.logOnFile = logOnFile ?? Logger.defaultLogOnFile ?? true;
 
-      console.log(this.logOnFile);
-
       if (this.logOnFile) {
         this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
       }
