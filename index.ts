@@ -4,10 +4,18 @@ interface DbModel {
     create(paths: {channel: string,level: string,message: any[]}): Promise<DbModel>;
 }
 
-export class Logger {
+export interface LoggerInterface {
+    log(...messages: any[]): void;
+    error(...messages: any[]): void;
+    warn(...messages: any[]): void;
+    info(...messages: any[]): void;
+    debug(...messages: any[]): void;
+}
+
+export class Logger implements LoggerInterface {
     static defaultDebugMode: boolean = false;
     static defaultDbModel:DbModel | null = null;
-    static defaultLogOnFile: boolean | null = null;
+    static defaultLogOnFile: boolean | null = null;Z
     debugMode: boolean;
     logOnFile: boolean;
     fileLogger: FileLogger;
@@ -75,6 +83,37 @@ export class Logger {
         );
         return messages;
     }
+}
+
+export function multiLog(...loggers: Logger[]): LoggerInterface {
+    return {
+        log(...messages) {
+            loggers.forEach(
+                logger => logger.log(...messages)
+            );
+        },
+        error(...messages) {
+            loggers.forEach(
+                logger => logger.error(...messages)
+            );
+        },
+        warn(...messages) {
+            loggers.forEach(
+                logger => logger.warn(...messages)
+            );            
+        },
+        info(...messages) {
+            loggers.forEach(
+                logger => logger.info(...messages)
+            );            
+        },
+        debug(...messages) {
+            loggers.forEach(
+                logger => logger.debug(...messages)
+            );
+        },
+    }
+
 }
 
 export default Logger;
