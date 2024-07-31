@@ -50,9 +50,14 @@ export class Logger implements LoggerInterface {
             || [logLevel.log, logLevel.error].includes(level)
         ) {
             console[level](...formattedMessages);
-        }        
+        }
+        this.persistLog(level, formattedMessages);
+    }
 
-        this.fileLogger && this.fileLogger[level](...formattedMessages);
+
+    persistLog(level: logLevel, messages: any[]) {           
+
+        this.fileLogger && this.fileLogger[level](...messages);
         this.dbModel?.create({
             channel: this.channel,
             level: level,
@@ -81,43 +86,37 @@ export class Logger implements LoggerInterface {
         return this._log(logLevel.error, messages);
     }
 
-    format(messages: any[], type: string) {
+    format(messages: any[], level: logLevel) {
         messages.unshift(
             `[${new Date().toLocaleString()}]`,
             `[${this.channel}]`,
-            `[${type}]`
+            `[${level}]`
         );
         return messages;
     }
 }
 
+function _multiLog(
+    level: logLevel,
+    loggers: Logger[],
+    messages: any[]
+) {
+    const firstLogger = loggers.shift();
+    firstLogger && firstLogger[level](...messages);
+
+    loggers.forEach(
+        logger => logger.persistLog(level, logger.format(messages, level))
+    );
+}
+
 export function multiLog(...loggers: Logger[]): LoggerInterface {
     return {
-        log(...messages) {
-            loggers.forEach(
-                logger => logger.log(...messages)
-            );
-        },
-        error(...messages) {
-            loggers.forEach(
-                logger => logger.error(...messages)
-            );
-        },
-        warn(...messages) {
-            loggers.forEach(
-                logger => logger.warn(...messages)
-            );            
-        },
-        info(...messages) {
-            loggers.forEach(
-                logger => logger.info(...messages)
-            );            
-        },
-        debug(...messages) {
-            loggers.forEach(
-                logger => logger.debug(...messages)
-            );
-        },
+        log: (...messages) => _multiLog(logLevel.log, loggers, messages),
+
+        error: (...messages) => _multiLog(logLevel.error, loggers, messages),
+        warn: (...messages) => _multiLog(logLevel.warn, loggers, messages),
+        info: (...messages) => _multiLog(logLevel.info, loggers, messages),
+        debug: (...messages) => _multiLog(logLevel.debug, loggers, messages),
     }
 
 }
