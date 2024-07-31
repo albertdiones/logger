@@ -12,6 +12,14 @@ export interface LoggerInterface {
     debug(...messages: any[]): void;
 }
 
+enum logLevel {
+    log = 'log',
+    error = 'error',
+    warn = 'warn',
+    info = 'info',
+    debug = 'debug'
+}
+
 export class Logger implements LoggerInterface {
     static defaultDebugMode: boolean = false;
     static defaultDbModel:DbModel | null = null;
@@ -33,46 +41,44 @@ export class Logger implements LoggerInterface {
 
       this.channel = channel;
     }
+
+    _log(level: logLevel, messages: any[]) {        
+        const formattedMessages = this.format(messages,level);
+
+        if (
+            this.debugMode 
+            || [logLevel.log, logLevel.error].includes(level)
+        ) {
+            console[level](...formattedMessages);
+        }        
+
+        this.fileLogger && this.fileLogger[level](...formattedMessages);
+        this.dbModel?.create({
+            channel: this.channel,
+            level: level,
+            message: messages
+        });
+    }
   
     log(...messages: any[]) {
-        const formattedMessages = this.format(messages,'log');
-        console.log(...formattedMessages);
-        this.fileLogger?.info(...formattedMessages);
-        this.dbModel?.create({channel: this.channel, level: 'log', message: messages});
+        return this._log(logLevel.log, messages);
     }
   
     debug(...messages: any[]) {
-        const formattedMessages = this.format(messages,'debug');
-        if (this.debugMode) {
-            console.debug(...formattedMessages)
-        }
-        this.fileLogger?.debug(...formattedMessages);
-        this.dbModel?.create({channel: this.channel, level: 'debug', message: messages});
+        return this._log(logLevel.debug, messages);
     }
   
-    info(...messages: any[]) {        
-        const formattedMessages = this.format(messages,'info');
-        if (this.debugMode) {
-            console.info(...formattedMessages);
-        }
-        this.fileLogger?.info(...formattedMessages);
-        this.dbModel?.create({channel: this.channel, level: 'info', message: messages});
+  
+    info(...messages: any[]) {
+        return this._log(logLevel.info, messages);
     }
   
-    warn(...messages: any[]) {        
-        const formattedMessages = this.format(messages,'warning');
-        if (this.debugMode) {
-            console.warn(...formattedMessages)
-        }
-        this.fileLogger?.warn(...formattedMessages);
-        this.dbModel?.create({channel: this.channel, level: 'warning', message: messages});
+    warn(...messages: any[]) {
+        return this._log(logLevel.warn, messages);
     }
   
     error(...messages: any[]) {
-        const formattedMessages = this.format(messages,'error');
-        console.error(...formattedMessages)
-        this.fileLogger?.error(...formattedMessages);
-        this.dbModel?.create({channel: this.channel, level: 'error', message: messages});
+        return this._log(logLevel.error, messages);
     }
 
     format(messages: any[], type: string) {
