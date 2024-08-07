@@ -26,7 +26,7 @@ export class Logger implements LoggerInterface {
     static defaultLogOnFile: boolean | null = null;
     debugMode: boolean;
     logOnFile: boolean;
-    fileLogger: FileLogger;
+    fileLogger: FileLogger | null = null;
     dbModel: DbModel | null;
     channel: string;
 
