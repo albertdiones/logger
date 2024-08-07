@@ -1,7 +1,7 @@
 import winston, { createLogger, Logger } from "winston";
 import * as fs from 'fs';
 import * as path from 'path';
-import LoggerInterface from '.'
+import {LoggerInterface} from '.'
 
 const plainTextFormat = winston.format.printf(({ 
     level: _level, // remove unused warning with underscore
