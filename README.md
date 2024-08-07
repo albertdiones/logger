@@ -35,3 +35,15 @@ ls -1 logs/
 --- nochannel.info.txt
 --- nochannel.warn.txt
 ```
+
+new feature:
+multiLog: Log on multiple channels at once, to enable cross-channel debugging
+
+```
+const logger2 = new Logger('btcusdt', {debugMode: true});
+
+// what if, growing candle on btcusdt? I want to log the same message
+// for both channel
+// option 2 - less characters
+multiLog(logger1, logger2).info("Growing candles on BTCUSDT");
+```
