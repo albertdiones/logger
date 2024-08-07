@@ -23,7 +23,7 @@ enum logLevel {
 export class Logger implements LoggerInterface {
     static defaultDebugMode: boolean = false;
     static defaultDbModel:DbModel | null = null;
-    static defaultLogOnFile: boolean | null = null;Z
+    static defaultLogOnFile: boolean | null = null;
     debugMode: boolean;
     logOnFile: boolean;
     fileLogger: FileLogger;
