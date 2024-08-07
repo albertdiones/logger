@@ -25,7 +25,8 @@
     "multi-file logging"
   ],
   "files": [
-    "./*.js"
+    "./*.js",
+    "./*.ts"
   ],
   "types": "./dist/logger.d.ts",
   "scripts": {
