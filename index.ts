@@ -30,13 +30,22 @@ export class Logger implements LoggerInterface {
     dbModel: DbModel | null;
     channel: string;
 
-    constructor(channel: string = 'nochannel', { debugMode=null, logDirectory = null, dbModel = null, logOnFile = null} = {}) {
-      this.debugMode = debugMode ?? Logger.defaultDebugMode;
-      this.dbModel = dbModel ?? Logger.defaultDbModel;
-      this.logOnFile = logOnFile ?? Logger.defaultLogOnFile ?? true;
+    constructor(
+        channel: string = 'nochannel',
+        options: {
+            debugMode?: boolean;
+            logDirectory?: string;
+            dbModel?: DbModel;
+            logOnFile?: boolean;
+        } = {}
+    ) {
+
+      this.debugMode = options.debugMode ?? Logger.defaultDebugMode;
+      this.dbModel = options.dbModel ?? Logger.defaultDbModel;
+      this.logOnFile = options.logOnFile ?? Logger.defaultLogOnFile ?? true;
 
       if (this.logOnFile) {
-        this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
+        this.fileLogger = new FileLogger(channel, { logDirectory: options.logDirectory ?? null });
       }
 
       this.channel = channel;
