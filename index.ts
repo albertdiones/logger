@@ -1,7 +1,7 @@
 import FileLogger from "./fileLogger";
 
 interface DbModel {
-    create(paths: {channel: string,level: string,message: any[]}): Promise<DbModel>;
+    create(paths: {channel: string,level: string,message: any[]}): void;
 }
 
 export interface LoggerInterface {
