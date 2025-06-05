@@ -110,8 +110,13 @@ function _multiLog(
     loggers: Logger[],
     messages: any[]
 ) {
-    const firstLogger = loggers.shift();
-    firstLogger && firstLogger[level](...messages);
+    const firstLogger = [...loggers].shift();
+
+    if (!firstLogger) {
+        throw "No loggers supplied to multiLog";
+    }
+
+    firstLogger[level](...messages);
 
     loggers.forEach(
         logger => logger.persistLog(level, logger.format(messages, level))

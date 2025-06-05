@@ -13,4 +13,16 @@ const logger2 = new Logger('btcusdt', {debugMode: true});
 // what if, growing candle on btcusdt? I want to log the same message
 // for both channel
 // option 2 - less characters
-multiLog(logger1, logger2).info("Growing candles on BTCUSDT");
+
+const multiLogger = multiLog(logger1, logger2);
+
+multiLogger.info("Growing candles on BTCUSDT");
+
+
+
+multiLogger.info("Multi log #2");
+
+
+
+
+multiLogger.info("Multi log #3");

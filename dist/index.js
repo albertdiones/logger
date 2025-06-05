@@ -8,14 +8,14 @@ var logLevel;
     logLevel["debug"] = "debug";
 })(logLevel || (logLevel = {}));
 export class Logger {
-    constructor(channel = 'nochannel', { debugMode = null, logDirectory = null, dbModel = null, logOnFile = null } = {}) {
-        var _a;
+    constructor(channel = 'nochannel', options = {}) {
+        var _a, _b, _c, _d, _e;
         this.fileLogger = null;
-        this.debugMode = debugMode !== null && debugMode !== void 0 ? debugMode : Logger.defaultDebugMode;
-        this.dbModel = dbModel !== null && dbModel !== void 0 ? dbModel : Logger.defaultDbModel;
-        this.logOnFile = (_a = logOnFile !== null && logOnFile !== void 0 ? logOnFile : Logger.defaultLogOnFile) !== null && _a !== void 0 ? _a : true;
+        this.debugMode = (_a = options.debugMode) !== null && _a !== void 0 ? _a : Logger.defaultDebugMode;
+        this.dbModel = (_b = options.dbModel) !== null && _b !== void 0 ? _b : Logger.defaultDbModel;
+        this.logOnFile = (_d = (_c = options.logOnFile) !== null && _c !== void 0 ? _c : Logger.defaultLogOnFile) !== null && _d !== void 0 ? _d : true;
         if (this.logOnFile) {
-            this.fileLogger = new FileLogger(channel, { logDirectory: logDirectory });
+            this.fileLogger = new FileLogger(channel, { logDirectory: (_e = options.logDirectory) !== null && _e !== void 0 ? _e : null });
         }
         this.channel = channel;
     }
@@ -60,8 +60,11 @@ Logger.defaultDebugMode = false;
 Logger.defaultDbModel = null;
 Logger.defaultLogOnFile = null;
 function _multiLog(level, loggers, messages) {
-    const firstLogger = loggers.shift();
-    firstLogger && firstLogger[level](...messages);
+    const firstLogger = [...loggers].shift();
+    if (!firstLogger) {
+        throw "No loggers supplied to multiLog";
+    }
+    firstLogger[level](...messages);
     loggers.forEach(logger => logger.persistLog(level, logger.format(messages, level)));
 }
 export function multiLog(...loggers) {
