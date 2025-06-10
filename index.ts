@@ -12,6 +12,14 @@ export interface LoggerInterface {
     debug(...messages: any[]): void;
 }
 
+export interface LogFormatterInterface {
+    format(messages: any[], level: logLevel): any[]
+}
+
+export interface PersistingLoggerInterface extends LoggerInterface {
+    persistLog(level: logLevel, messages: any[]): void;
+}
+
 enum logLevel {
     log = 'log',
     error = 'error',
@@ -64,7 +72,7 @@ export class Logger implements LoggerInterface {
     }
 
 
-    persistLog(level: logLevel, messages: any[]) {           
+    persistLog(level: logLevel, messages: any[]): void {           
 
         this.fileLogger && this.fileLogger[level](...messages);
         this.dbModel?.create({
@@ -95,7 +103,7 @@ export class Logger implements LoggerInterface {
         return this._log(logLevel.error, messages);
     }
 
-    format(messages: any[], level: logLevel) {
+    format(messages: any[], level: logLevel): any[] {
         messages.unshift(
             `[${new Date().toLocaleString()}]`,
             `[${this.channel}]`,
@@ -107,7 +115,7 @@ export class Logger implements LoggerInterface {
 
 function _multiLog(
     level: logLevel,
-    loggers: Logger[],
+    loggers: (PersistingLoggerInterface & LogFormatterInterface)[],
     messages: any[]
 ) {
     const firstLogger = [...loggers].shift();
@@ -123,7 +131,7 @@ function _multiLog(
     );
 }
 
-export function multiLog(...loggers: Logger[]): LoggerInterface {
+export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterInterface)[]): LoggerInterface {
     return {
         log: (...messages) => _multiLog(logLevel.log, loggers, messages),
 
