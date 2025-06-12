@@ -4,9 +4,7 @@ interface DbModel {
     create(paths: {channel: string,level: string,message: any[]}): void;
 }
 
-
-
-export interface ConsoleLoggerInterface {
+export interface LoggerInterface {
     log(...messages: any[]): void;
     error(...messages: any[]): void;
     warn(...messages: any[]): void;
@@ -18,11 +16,9 @@ export interface LogFormatterInterface {
     format(messages: any[], level: logLevel): any[]
 }
 
-export interface PersistingLoggerInterface extends ConsoleLoggerInterface {
+export interface PersistingLoggerInterface extends LoggerInterface {
     persistLog(level: logLevel, messages: any[]): void;
 }
-
-export type LoggerInterface = PersistingLoggerInterface & LogFormatterInterface & ConsoleLoggerInterface;
 
 enum logLevel {
     log = 'log',
@@ -32,7 +28,7 @@ enum logLevel {
     debug = 'debug'
 }
 
-export class Logger implements ConsoleLoggerInterface {
+export class Logger implements LoggerInterface {
     static defaultDebugMode: boolean = false;
     static defaultDbModel:DbModel | null = null;
     static defaultLogOnFile: boolean | null = null;
@@ -119,11 +115,10 @@ export class Logger implements ConsoleLoggerInterface {
 
 function _multiLog(
     level: logLevel,
-    loggers: LoggerInterface[],
+    loggers: (PersistingLoggerInterface & LogFormatterInterface)[],
     messages: any[]
 ) {
-    const subLoggers = [...loggers];
-    const firstLogger = loggers[0]
+    const firstLogger = [...loggers].shift();
 
     if (!firstLogger) {
         throw "No loggers supplied to multiLog";
@@ -136,7 +131,7 @@ function _multiLog(
     );
 }
 
-export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterInterface)[]): ConsoleLoggerInterface {
+export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterInterface)[]): LoggerInterface {
     return {
         log: (...messages) => _multiLog(logLevel.log, loggers, messages),
 
