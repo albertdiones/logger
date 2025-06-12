@@ -131,7 +131,7 @@ function _multiLog(
     );
 }
 
-export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterInterface)[]): LoggerInterface {
+export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterInterface)[]): PersistingLoggerInterface & LogFormatterInterface {
     return {
         log: (...messages) => _multiLog(logLevel.log, loggers, messages),
 
@@ -139,6 +139,10 @@ export function multiLog(...loggers: (PersistingLoggerInterface & LogFormatterIn
         warn: (...messages) => _multiLog(logLevel.warn, loggers, messages),
         info: (...messages) => _multiLog(logLevel.info, loggers, messages),
         debug: (...messages) => _multiLog(logLevel.debug, loggers, messages),
+        format: (messages: any[], level: logLevel): any[] => loggers[0].format(messages, level),
+        persistLog: (level: logLevel, messages: any[]): void => loggers.forEach(
+            logger => logger.persistLog(level, logger.format(messages, level))
+        )
     }
 
 }
