@@ -1,6 +1,6 @@
 {
   "name": "add_logger",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "Multichannel File Logger and Console Logger in one",
   "main": "dist/index.js",
   "exports": {
