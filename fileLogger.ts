@@ -1,7 +1,7 @@
 import winston, { createLogger, Logger } from "winston";
 import * as fs from 'fs';
 import * as path from 'path';
-import {LoggerInterface} from '.'
+import {ConsoleLoggerInterface} from '.'
 
 const plainTextFormat = winston.format.printf(({ 
     level: _level, // remove unused warning with underscore
@@ -17,7 +17,7 @@ interface FileLoggerOptions {
     maxFileSize?: number;
 }
 
-export class FileLogger implements LoggerInterface {
+export class FileLogger implements ConsoleLoggerInterface {
     winston: Logger;
     logDirectory: string;
     maxFileSize: number;

@@ -60,7 +60,8 @@ Logger.defaultDebugMode = false;
 Logger.defaultDbModel = null;
 Logger.defaultLogOnFile = null;
 function _multiLog(level, loggers, messages) {
-    const firstLogger = [...loggers].shift();
+    const subLoggers = [...loggers];
+    const firstLogger = loggers[0];
     if (!firstLogger) {
         throw "No loggers supplied to multiLog";
     }
