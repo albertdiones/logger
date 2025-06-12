@@ -74,6 +74,8 @@ export function multiLog(...loggers) {
         warn: (...messages) => _multiLog(logLevel.warn, loggers, messages),
         info: (...messages) => _multiLog(logLevel.info, loggers, messages),
         debug: (...messages) => _multiLog(logLevel.debug, loggers, messages),
+        format: (messages, level) => loggers[0].format(messages, level),
+        persistLog: (level, messages) => loggers.forEach(logger => logger.persistLog(level, logger.format(messages, level)))
     };
 }
 export default Logger;
